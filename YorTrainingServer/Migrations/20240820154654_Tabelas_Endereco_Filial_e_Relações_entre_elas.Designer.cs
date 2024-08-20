@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YorTrainingServer.Data;
 
@@ -10,9 +11,11 @@ using YorTrainingServer.Data;
 namespace YorTrainingServer.Migrations
 {
     [DbContext(typeof(YourTrainingDbContext))]
-    partial class YourTrainingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240820154654_Tabelas_Endereco_Filial_e_Relações_entre_elas")]
+    partial class Tabelas_Endereco_Filial_e_Relações_entre_elas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -20,21 +23,6 @@ namespace YorTrainingServer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
-
-            modelBuilder.Entity("FilialFuncionario", b =>
-                {
-                    b.Property<int>("FiliaisFilialId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FuncionariosFuncionarioId")
-                        .HasColumnType("int");
-
-                    b.HasKey("FiliaisFilialId", "FuncionariosFuncionarioId");
-
-                    b.HasIndex("FuncionariosFuncionarioId");
-
-                    b.ToTable("FilialFuncionario");
-                });
 
             modelBuilder.Entity("YorTrainingServer.Models.Academia", b =>
                 {
@@ -84,6 +72,9 @@ namespace YorTrainingServer.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
+                    b.Property<int>("FilialId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Logradouro")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -105,6 +96,9 @@ namespace YorTrainingServer.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.HasKey("EnderecoID");
+
+                    b.HasIndex("FilialId")
+                        .IsUnique();
 
                     b.ToTable("Enderecos");
                 });
@@ -129,9 +123,6 @@ namespace YorTrainingServer.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
 
-                    b.Property<int>("EnderecoId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -146,64 +137,18 @@ namespace YorTrainingServer.Migrations
 
                     b.HasIndex("AcademiaId1");
 
-                    b.HasIndex("EnderecoId")
-                        .IsUnique();
-
                     b.ToTable("Filiais");
                 });
 
-            modelBuilder.Entity("YorTrainingServer.Models.Funcionario", b =>
+            modelBuilder.Entity("YorTrainingServer.Models.Endereco", b =>
                 {
-                    b.Property<int>("FuncionarioId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("FuncionarioId"));
-
-                    b.Property<int>("EnderecoId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("Telefone")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<string>("TipoFuncionario")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
-
-                    b.Property<string>("email")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.HasKey("FuncionarioId");
-
-                    b.HasIndex("EnderecoId")
-                        .IsUnique();
-
-                    b.ToTable("Funcionario");
-                });
-
-            modelBuilder.Entity("FilialFuncionario", b =>
-                {
-                    b.HasOne("YorTrainingServer.Models.Filial", null)
-                        .WithMany()
-                        .HasForeignKey("FiliaisFilialId")
+                    b.HasOne("YorTrainingServer.Models.Filial", "Filial")
+                        .WithOne("Endereco")
+                        .HasForeignKey("YorTrainingServer.Models.Endereco", "FilialId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("YorTrainingServer.Models.Funcionario", null)
-                        .WithMany()
-                        .HasForeignKey("FuncionariosFuncionarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Filial");
                 });
 
             modelBuilder.Entity("YorTrainingServer.Models.Filial", b =>
@@ -214,26 +159,7 @@ namespace YorTrainingServer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("YorTrainingServer.Models.Endereco", "Endereco")
-                        .WithOne("Filial")
-                        .HasForeignKey("YorTrainingServer.Models.Filial", "EnderecoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Academia");
-
-                    b.Navigation("Endereco");
-                });
-
-            modelBuilder.Entity("YorTrainingServer.Models.Funcionario", b =>
-                {
-                    b.HasOne("YorTrainingServer.Models.Endereco", "Endereco")
-                        .WithOne("Funcionario")
-                        .HasForeignKey("YorTrainingServer.Models.Funcionario", "EnderecoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Endereco");
                 });
 
             modelBuilder.Entity("YorTrainingServer.Models.Academia", b =>
@@ -241,12 +167,9 @@ namespace YorTrainingServer.Migrations
                     b.Navigation("Filiais");
                 });
 
-            modelBuilder.Entity("YorTrainingServer.Models.Endereco", b =>
+            modelBuilder.Entity("YorTrainingServer.Models.Filial", b =>
                 {
-                    b.Navigation("Filial")
-                        .IsRequired();
-
-                    b.Navigation("Funcionario")
+                    b.Navigation("Endereco")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

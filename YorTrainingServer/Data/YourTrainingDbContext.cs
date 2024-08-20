@@ -11,5 +11,7 @@ namespace YorTrainingServer.Data
         }
 
         public DbSet<Academia> Academias { get; set; }
+        public DbSet<Endereco> Enderecos { get; set; }
+        public DbSet<Filial> Filiais { get; set; }
     }
 }

@@ -24,6 +24,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<EnderecoService>();
 builder.Services.AddScoped<FilialService>();
 builder.Services.AddScoped<AcademiaService>();
+builder.Services.AddScoped<FuncionarioService>();
 
 var app = builder.Build();
 

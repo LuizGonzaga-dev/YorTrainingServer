@@ -4,11 +4,13 @@ namespace YorTrainingServer.Models
 {
     public class Academia
     {
-        public string AcademiaId { get; set; }
+        public int AcademiaId { get; set; }
 
         [Required]
         [StringLength(30)]
         public string Name { get; set; }
+
+        public bool IsDeleted { get; set; } = false;
 
         public virtual ICollection<Filial> Filiais { get; set; }
     }

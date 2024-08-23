@@ -22,6 +22,9 @@ namespace YorTrainingServer.Models
         [StringLength(20)]
         public string TipoFuncionario { get; set; }
 
+        public bool IsDeleted { get; set; } = false;
+
+        [Required]
         public int EnderecoId { get; set; }
         public virtual Endereco Endereco { get; set; }
 

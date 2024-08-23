@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using YorTrainingServer.ViewModels.Endereco;
+using System.Text.Json.Serialization;
 
 namespace YorTrainingServer.Models
 {
@@ -41,8 +43,25 @@ namespace YorTrainingServer.Models
         [StringLength(100)]
         public string Pais { get; set; } = "Brasil";
 
+        [JsonIgnore]
         public virtual Filial Filial { get; set; }
+        [JsonIgnore]
         public virtual Funcionario Funcionario { get; set; }
+
+        public Endereco() {}
+
+        public Endereco(CreateEndereco data)
+        {
+            Bairro = data.Bairro;
+            CEP = data.CEP;
+            Cidade = data.Cidade;
+            Complemento = data.Complemento;
+            Estado = data.Estado;
+            Logradouro = data.Logradouro;
+            Numero = data.Numero;
+            Pais = data.Pais;
+            TipoEndereco = data.TipoEndereco;
+        }
 
     }
 }

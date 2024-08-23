@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace YorTrainingServer.Models
 {
@@ -19,12 +20,14 @@ namespace YorTrainingServer.Models
         [EmailAddress]
         public string Email { get; set; }
 
+        public bool IsDeleted { get; set; } = false;
+
         public int AcademiaId { get; set; }
         public virtual Academia Academia { get; set; }
 
+        [Required]
         public int EnderecoId { get; set; }
         public virtual Endereco Endereco { get; set; }
-
         public virtual ICollection<Funcionario> Funcionarios { get; set; }
 
     }
